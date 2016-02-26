@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "bufferutil": "^1.2.1",
-    "codebird": "^2.6.0",
     "d3": "^3.5.16",
     "d3-queue": "^2.0.2",
     "express": "^4.13.4",

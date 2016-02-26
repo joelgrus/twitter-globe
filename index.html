@@ -21,7 +21,16 @@ h1 {
   text-align: center;
 }
 
+.octocat {
+  position: absolute;
+  left: 25px;
+  top: 25px;
+}
+
 </style>
+<a class="octocat" href="https://github.com/joelgrus/twitter-globe">
+  <img src="octocat.png">
+</a>
 <div class="title"><h1>Tweets</h1></title>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="//d3js.org/queue.v1.min.js"></script>
@@ -71,7 +80,7 @@ function ready(error, world, names) {
   });
 
   // Open up a socket to the website.
-  var socket = io("http://localhost:3000", { "force new connection" : true });
+  var socket = io({ "force new connection" : true });
 
   // And whenever you get a tweet message from the socket...
   socket.on('tweet', function(tweet) {

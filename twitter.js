@@ -1,3 +1,9 @@
+/**
+ * This is the server that does everything. It serves the index.html web page.
+ * It opens a streaming connection to Twitter and retrieves the tweets. It
+ * publishes all of the geotagged tweets to a Socket.io socket.
+ */
+
 var Twitter = require('twitter'),
     credentials = require('./credentials.js'),
     client = new Twitter(credentials),
@@ -8,17 +14,16 @@ var Twitter = require('twitter'),
     EventEmitter = require('events'),
     util = require('util');
 
-/*
- * EXPRESS BOILERPLATE
- *
+/**
+ * EXPRESS BOILERPLATE GOES HERE
  */
 
-// Serve index.html.
+// Serve index.html at the root.
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
-// Service static files in the public directory.
+// Serve static files in the public directory.
 app.use(express.static('public'));
 
 // Run on port 3000.
@@ -26,8 +31,10 @@ http.listen(3000, function() {
   console.log('listnening on 3000');
 });
 
-// Set up an EventEmitter to decouple the Twitter listener and the socketio.
-
+/**
+ * Create a stupid EventEmitter so that we can decouple the Twitter listener
+ * and the socket.io socket.
+ */
 function TweetEmitter() {
   EventEmitter.call(this);
 }
@@ -35,22 +42,13 @@ util.inherits(TweetEmitter, EventEmitter);
 
 var tweetEmitter = new TweetEmitter();
 
+/**
+ * Here's all the socket.io stuff
+ */
 
-// SocketIO stuff
-
-var allClients = [];
-io.on('connection', function(socket) {
-  allClients.push(socket);
-  console.log('connected');
-
-  tweetEmitter.on('tweet', function(tweet) {
-    io.emit('tweet', tweet);
-  });
-
-  socket.on('disconnect', function() {
-    allClients = allClients.filter(function(s) { return s != socket; });
-  })
-
+tweetEmitter.on('tweet', function(tweet) {
+  console.log(tweet);
+  io.emit('tweet', tweet);
 });
 
 // Twitter stuff
@@ -74,7 +72,6 @@ client.stream('statuses/filter', {track: QUERY}, function(stream) {
         placeName: tweet.place.full_name,
         latLong: center(tweet.place.bounding_box.coordinates[0])
       }
-      console.log(tweetSmall);
       tweetEmitter.emit('tweet', tweetSmall);
     }
   });

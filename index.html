@@ -70,7 +70,10 @@ function ready(error, world, names) {
     return a.name.localeCompare(b.name);
   });
 
-  var socket = io("http://localhost:3000", {"force new connection":true});
+  // Open up a socket to the website.
+  var socket = io("http://localhost:3000", { "force new connection" : true });
+
+  // And whenever you get a tweet message from the socket...
   socket.on('tweet', function(tweet) {
     console.log(tweet);
     d3.transition()
@@ -92,31 +95,6 @@ function ready(error, world, names) {
         };
       });
   });
-
-
-  /*
-  (function transition() {
-    d3.transition()
-        .duration(1250)
-        .each("start", function() {
-          title.text(countries[i = (i + 1) % n].name);
-        })
-        .tween("rotate", function() {
-          var p = d3.geo.centroid(countries[i]),
-              r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
-          return function(t) {
-            projection.rotate(r(t));
-            c.clearRect(0, 0, width, height);
-            c.fillStyle = "#ccc", c.beginPath(), path(land), c.fill();
-            c.fillStyle = "#f00", c.beginPath(), path(countries[i]), c.fill();
-            c.strokeStyle = "#fff", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
-            c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
-          };
-        })
-      .transition()
-        .each("end", transition);
-  })();
-  */
 }
 
 d3.select(self.frameElement).style("height", height + "px");

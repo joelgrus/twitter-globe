@@ -4,21 +4,56 @@ var Twitter = require('twitter'),
     express = require('express'),
     app = express(),
     http = require('http').Server(app),
-    io = require('socket.io')(http);
+    io = require('socket.io')(http),
+    EventEmitter = require('events'),
+    util = require('util');
 
-io.on('connection', function(socket) {
-  console.log('connected');
-});
+/*
+ * EXPRESS BOILERPLATE
+ *
+ */
 
+// Serve index.html.
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
+// Service static files in the public directory.
 app.use(express.static('public'));
 
+// Run on port 3000.
 http.listen(3000, function() {
   console.log('listnening on 3000');
 });
+
+// Set up an EventEmitter to decouple the Twitter listener and the socketio.
+
+function TweetEmitter() {
+  EventEmitter.call(this);
+}
+util.inherits(TweetEmitter, EventEmitter);
+
+var tweetEmitter = new TweetEmitter();
+
+
+// SocketIO stuff
+
+var allClients = [];
+io.on('connection', function(socket) {
+  allClients.push(socket);
+  console.log('connected');
+
+  tweetEmitter.on('tweet', function(tweet) {
+    io.emit('tweet', tweet);
+  });
+
+  socket.on('disconnect', function() {
+    allClients = allClients.filter(function(s) { return s != socket; });
+  })
+
+});
+
+// Twitter stuff
 
 var QUERY = process.argv[2] || 'trump';
 
@@ -31,18 +66,16 @@ function center(latLongs) {
 }
 
 client.stream('statuses/filter', {track: QUERY}, function(stream) {
-  io.on('connection', function (socket) {
-    stream.on('data', function(tweet) {
-      if (tweet.place) {
-        var tweetSmall = {
-          user: tweet.user.screen_name,
-          text: tweet.text,
-          placeName: tweet.place.full_name,
-          latLong: center(tweet.place.bounding_box.coordinates[0])
-        }
-        console.log(tweetSmall);
-        io.emit('tweet', tweetSmall);
+  stream.on('data', function(tweet) {
+    if (tweet.place) {
+      var tweetSmall = {
+        user: tweet.user.screen_name,
+        text: tweet.text,
+        placeName: tweet.place.full_name,
+        latLong: center(tweet.place.bounding_box.coordinates[0])
       }
-    });
+      console.log(tweetSmall);
+      tweetEmitter.emit('tweet', tweetSmall);
+    }
   });
 });

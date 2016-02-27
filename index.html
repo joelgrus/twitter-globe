@@ -104,11 +104,11 @@ function ready(error, world, names) {
   function makeHTML(tweet) {
     return [
       '<div class="user">',
-      '<a href="https://twitter.com/', tweet.user, '/status/', tweet.id, '"', 'target="_blank">',
-      '@', tweet.user,
-      '</a>',
+      '<a href="https://twitter.com/', tweet.user, '" target="_blank">', '@', tweet.user, '</a>',
       '<h1>', tweet.placeName, '</h1>',
-      '<div class="tweet">', tweet.text, '</div>'
+      '<div class="tweet">',
+      '<a href="https://twitter.com/', tweet.user, '/status/', tweet.id, '" target="_blank">',
+      tweet.text, '</a>', '</div>'
     ].join('');
   }
 

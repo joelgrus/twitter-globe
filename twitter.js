@@ -73,7 +73,7 @@ client.stream('statuses/filter', {track: QUERY}, function(stream) {
         user: tweet.user.screen_name,
         text: tweet.text,
         placeName: tweet.place.full_name,
-        latLong: center(tweet.place.bounding_box.coordinates[0])
+        latLong: center(tweet.place.bounding_box.coordinates[0]),
       }
       tweetEmitter.emit('tweet', tweetSmall);
     }

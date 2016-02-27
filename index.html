@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<head>
+  <title>Tweets on a Globe</title>
+</head>
 <style>
 
 .title {
@@ -108,6 +111,8 @@ function ready(error, world, names) {
           c.fillStyle = "#ccc", c.beginPath(), path(land), c.fill();
           c.strokeStyle = "#fff", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
           c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
+          var center = projection(p);
+          c.strokeStyle = "#000", c.fillStyle = "#f00", c.beginPath(), c.arc(center[0], center[1], 5, 0, 2 * Math.PI, false), c.lineWidth = 2, c.fill(), c.stroke();
         };
       });
   });

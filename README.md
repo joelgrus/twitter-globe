@@ -2,7 +2,7 @@
 
 Real-time visualization of geotagged tweets about a given topic, using d3, socket.io, and the Twitter API.
 
-Read gory details at:
+Read all the gory details at:
 
 http://joelgrus.com/2016/02/27/trump-tweets-on-a-globe-aka-fun-with-d3-socketio-and-the-twitter-api/
 

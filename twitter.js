@@ -50,11 +50,14 @@ tweetEmitter.on('tweet', function(tweet) {
 });
 
 // a helper function to average coordinate pairs
-function average(latLongs) {
-  var n = latLongs.length, lon = 0.0, lat = 0.0;
-  latLongs.forEach(function(ll) {
-    lon += ll[0];
-    lat += ll[1];
+function average(coordinates) {
+  var n = 0, lon = 0.0, lat = 0.0;
+  coordinates.forEach(function(latLongs) {
+    latLongs.forEach(function(latLong) {
+      lon += latLong[0];
+      lat += latLong[1];
+      n += 1;
+    })
   });
   return [lon / n, lat / n];
 }
@@ -65,18 +68,22 @@ var Twitter = require('twitter'),
     credentials = require('./credentials.js'),
     client = new Twitter(credentials);
 
-var QUERY = process.argv[2] || 'trump';
+var query = process.argv[2] || 'trump';
 
-client.stream('statuses/filter', {track: QUERY}, function(stream) {
+client.stream('statuses/filter', {track: query}, function(stream) {
+  // Every time we receive a tweet...
   stream.on('data', function(tweet) {
+    // ... that has the `place` field populated ...
     if (tweet.place) {
+      // ... extract only the fields needed by the client ...
       var tweetSmall = {
         id: tweet.id_str,
         user: tweet.user.screen_name,
         text: tweet.text,
         placeName: tweet.place.full_name,
-        latLong: average(tweet.place.bounding_box.coordinates[0]),
+        latLong: average(tweet.place.bounding_box.coordinates),
       }
+      // ... and notify the tweetEmitter.
       tweetEmitter.emit('tweet', tweetSmall);
     }
   });

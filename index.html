@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-  <title>Tweets on a Globe</title>
+  <title>Tweets on a Globe!</title>
 </head>
 <style>
 
@@ -101,6 +101,7 @@ function ready(error, world, names) {
   // Open up a socket to the website.
   var socket = io({ "force new connection" : true });
 
+  // Yes, I know how ugly this is.
   function makeHTML(tweet) {
     return [
       '<div class="user">',

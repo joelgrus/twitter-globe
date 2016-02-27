@@ -5,7 +5,7 @@
 (Props to Mike Bostock's <a href = "http://bl.ocks.org/mbostock/4183330">World Tour</a>,
  from which I appropriated liberally.)
 
-Run it yourself with your favorite search phrase:
+Run it yourself with your favorite search phrase. First install the dependencies:
 
 ```bash
 $ npm install
